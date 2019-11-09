@@ -7,7 +7,7 @@ services:
       - 8200:8200
     configs:
       - source: vault_json
-        target: /vault/config/vault-config.json
+        target: /vault/config/vault-config.hcl
         mode: 444
     environment:
       - VAULT_ADDR=http://vault.${DNS_SUFFIX}
@@ -15,7 +15,7 @@ services:
       - vault-secrets
       - vault-backend
       - traefik-net
-    command: server -config=/vault/config/vault-config.json
+    command: vault server
     deploy:
       labels:
         - "traefik.frontend.rule=Host:vault.${DNS_SUFFIX}"
@@ -25,7 +25,7 @@ services:
 
 configs:
   vault_json:
-    file: ./vault/config/vault-config.json
+    file: ./vault/config/vault-config.hcl
 
 networks:
   vault-backend:
