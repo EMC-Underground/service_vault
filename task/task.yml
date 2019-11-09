@@ -1,0 +1,26 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: alpinelinux/docker-cli
+    tag: latest
+
+params:
+  DNS_SUFFIX: ((dnssuffix))
+  DOCKER_HOST: ((dockerhost))
+
+inputs:
+  - name: vault_repo
+
+run:
+  path: sh
+  args:
+  - -c
+  - |
+    cd vault_repo
+    docker stack deploy -c docker-compose.yml vault
+    docker stack ls
+    docker service ls
+    sleep 5

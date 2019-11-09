@@ -1,0 +1,30 @@
+version: '3.6'
+
+services:
+  vault:
+    image: vault
+    ports:
+      - 8200:8200
+    configs:
+      - source: vault_json
+        target: /vault/config/vault-config.json
+        mode: 444
+    environment:
+      - VAULT_ADDR=http://vault.${DNS_SUFFIX}
+    networks:
+      - vault-secrets
+      - vault-backend
+      - traefik-net
+    command: server -config=/vault/config/vault-config.json
+
+configs:
+  vault_json:
+    file: ./vault/config/vault-config.json
+
+networks:
+  vault-backend:
+    external: true
+  vault-secrets:
+    external: true
+  traefik-net:
+    external: true
