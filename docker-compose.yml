@@ -15,7 +15,7 @@ services:
       - vault-secrets
       - vault-backend
       - traefik-net
-    command: vault server
+    command: vault server -config=/vault/config/vault-config.hcl
     deploy:
       labels:
         - "traefik.frontend.rule=Host:vault.${DNS_SUFFIX}"
