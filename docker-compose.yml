@@ -3,8 +3,6 @@ version: '3.6'
 services:
   vault:
     image: vault
-    ports:
-      - 8200:8200
     configs:
       - source: vault_json
         target: /vault/config/vault-config.hcl
