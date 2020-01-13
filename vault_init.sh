@@ -1,3 +1,5 @@
+#!/bin/ash
+
 vault_init() {
     printf "${cyan}Initializing Vault.... "
     local  __resultvar=$1
