@@ -29,6 +29,7 @@ run:
     docker stack ls
     docker service ls
     sleep 5
-    apk add --update jq vault ncurses
+    apk add --update jq vault
     chmod +x vault_init.sh
+    chown root:root /usr/sbin/vault
     ash ./vault_init.sh
