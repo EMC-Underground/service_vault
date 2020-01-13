@@ -103,11 +103,9 @@ main() {
     vault_version=`vault -v | awk '{print substr($2,2)}'`
     echo "Vault CLI version: ${vault_version}"
     echo "Vault address: ${vault_address}"
-    echo "vault_init"
     vault_init keys
     unseal=`echo $keys | jq -r .unseal_keys_b64[0]`
     roottoken=`echo $keys | jq -r .root_token`
-    echo "vault_unseal"
     vault_unseal $unseal
     vault_login $roottoken
     vault_create_store
