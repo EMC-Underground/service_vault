@@ -100,6 +100,8 @@ create_vault_secret() {
 }
 
 main() {
+    vault_version=`vault -v | awk '{print substr($2,2)}'`
+    echo "Vault CLI version: ${vault_version}"
     echo "Vault address: ${vault_address}"
     echo "vault_init"
     vault_init keys
