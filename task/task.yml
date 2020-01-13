@@ -20,7 +20,12 @@ run:
   - -c
   - |
     cd vault_repo
-    docker stack deploy -c docker-compose.yml vault
+    docker stack ps vault > /dev/null
+    if [ $? -ne 0 ]
+    then
+        docker stack deploy -c docker-compose.yml vault
+        echo "Deployed Vault"
+    fi
     docker stack ls
     docker service ls
     sleep 5
