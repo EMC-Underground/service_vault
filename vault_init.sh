@@ -10,26 +10,18 @@ magenta=`tput setaf 5`
 check="\xE2\x9C\x94"
 cross="\xE2\x9C\x98"
 
-print_cross() {
-    printf "${red}${cross}\n${reset}"
-}
-
-print_check() {
-    printf "${green}${check}\n${reset}"
-}
-
 success() {
     if [ $? -eq 0 ]
     then
-        print_check
+      echo "DONE"
     else
-        print_cross
+      echo "ERROR"
         exit 1
     fi
 }
 
 vault_init() {
-    printf "${cyan}Initializing Vault.... "
+    printf "Initializing Vault.... "
     local  __resultvar=$1
     local i=0
     local o=0
@@ -38,14 +30,14 @@ vault_init() {
         vault operator init -address=$vault_address -status > /dev/null 2>&1
         if [[ $? -eq 2 || $? -eq 0 ]]
         then
-            ((i++))
+            ((i=i+1))
         else
             if [ $o -eq 4 ]
             then
                 success
-                ((i++))
+                ((i=i+1))
             else
-                ((o++))
+                ((o=o+1))
                 sleep 2
             fi
         fi
@@ -57,19 +49,19 @@ vault_init() {
 
 vault_unseal() {
     local root_token=$1
-    printf "${cyan}Unsealing the vault.... ${reset}"
+    printf "Unsealing the vault.... "
     vault operator unseal -address=$vault_address $root_token > /dev/null 2>&1
     success
 }
 
 vault_create_store() {
-    printf "${cyan}Creating vault secret store.... ${reset}"
+    printf "Creating vault secret store.... "
     vault secrets enable -address=$vault_address -version=1 -path=concourse kv > /dev/null 2>&1
     success
 }
 
 vault_create_policy() {
-    printf "${cyan}Create vault policy.... ${reset}"
+    printf "Create vault policy.... "
     echo 'path "concourse/*" {
   policy = "read"
 }' > /tmp/concourse-policy.hcl
@@ -78,7 +70,7 @@ vault_create_policy() {
 }
 
 vault_create_token() {
-    printf "${cyan}Create vault service account.... "
+    printf "Create vault service account.... "
     local __resultvar=$1
     local result=`vault token create -address=$vault_address -display-name=concourse -format=json --policy concourse --period 1hr | jq -r .auth.client_token`
     success
@@ -87,7 +79,7 @@ vault_create_token() {
 
 vault_login() {
     local root_token=$1
-    printf "${cyan}Logging into Vault.... "
+    printf "Logging into Vault.... "
     local i=0
     local o=0
     while [[ $i -lt 1 ]]
@@ -95,13 +87,13 @@ vault_login() {
         local ha_mode=`vault status -address=$vault_address | grep "HA Mode" | awk '{print $3}'`
         if [ $ha_mode == "active" ]
         then
-            ((i++))
+            ((i=i+1))
         else
             if [ $o -eq 4 ]
             then
                 success
             else
-                ((o++))
+                ((o=o+1))
                 sleep 2
             fi
         fi
@@ -112,7 +104,7 @@ vault_login() {
 
 create_vault_secret() {
     local team=$1 pipeline=$2 secret=$3
-    printf "${cyan}Creating ${2} vault secret.... "
+    printf "Creating ${2} vault secret.... "
     echo -n "$secret" | vault kv put -address=$vault_address $team$pipeline value=- > /dev/null
     success
 }
