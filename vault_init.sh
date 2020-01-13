@@ -1,5 +1,33 @@
 #!/bin/ash
 
+# Set Color Variables
+red=`tput setaf 1`
+green=`tput setaf 2`
+reset=`tput sgr0`
+cyan=`tput setaf 6`
+blue=`tput setaf 4`
+magenta=`tput setaf 5`
+check="\xE2\x9C\x94"
+cross="\xE2\x9C\x98"
+
+print_cross() {
+    printf "${red}${cross}\n${reset}"
+}
+
+print_check() {
+    printf "${green}${check}\n${reset}"
+}
+
+success() {
+    if [ $? -eq 0 ]
+    then
+        print_check
+    else
+        print_cross
+        exit 1
+    fi
+}
+
 vault_init() {
     printf "${cyan}Initializing Vault.... "
     local  __resultvar=$1
@@ -22,7 +50,7 @@ vault_init() {
             fi
         fi
     done
-    local result=`vault operator init -address=$vault_address -key-threshold=1 -key-shares=1 -for>
+    local result=`vault operator init -address=$vault_address -key-threshold=1 -key-shares=1 -format=json`
     success
     eval $__resultvar="'$result'"
 }
@@ -45,14 +73,14 @@ vault_create_policy() {
     echo 'path "concourse/*" {
   policy = "read"
 }' > /tmp/concourse-policy.hcl
-    vault policy write -address=$vault_address concourse /tmp/concourse-policy.hcl > /dev/null 2>>
+    vault policy write -address=$vault_address concourse /tmp/concourse-policy.hcl > /dev/null 2>&1
     success
 }
 
 vault_create_token() {
     printf "${cyan}Create vault service account.... "
     local __resultvar=$1
-    local result=`vault token create -address=$vault_address -display-name=concourse -format=json>
+    local result=`vault token create -address=$vault_address -display-name=concourse -format=json --policy concourse --period 1hr | jq -r .auth.client_token`
     success
     eval $__resultvar="'$result'"
 }
