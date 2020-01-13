@@ -100,6 +100,7 @@ create_vault_secret() {
 }
 
 main() {
+    echo "Vault address: ${vault_address}"
     echo "vault_init"
     vault_init keys
     unseal=`echo $keys | jq -r .unseal_keys_b64[0]`
