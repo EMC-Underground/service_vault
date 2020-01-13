@@ -1,15 +1,5 @@
 #!/bin/ash
 
-# Set Color Variables
-red=`tput setaf 1`
-green=`tput setaf 2`
-reset=`tput sgr0`
-cyan=`tput setaf 6`
-blue=`tput setaf 4`
-magenta=`tput setaf 5`
-check="\xE2\x9C\x94"
-cross="\xE2\x9C\x98"
-
 success() {
     if [ $? -eq 0 ]
     then
@@ -110,9 +100,11 @@ create_vault_secret() {
 }
 
 main() {
+    echo "vault_init"
     vault_init keys
     unseal=`echo $keys | jq -r .unseal_keys_b64[0]`
     roottoken=`echo $keys | jq -r .root_token`
+    echo "vault_unseal"
     vault_unseal $unseal
     vault_login $roottoken
     vault_create_store
