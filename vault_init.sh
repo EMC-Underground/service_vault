@@ -20,14 +20,14 @@ vault_init() {
         vault operator init -address=$vault_address -status
         if [[ $? -eq 2 || $? -eq 0 ]]
         then
-            ((i=i+1))
+            i=i+1
         else
             if [ $o -eq 4 ]
             then
                 success
-                ((i=i+1))
+                i=i+1
             else
-                ((o=o+1))
+                o=o+1
                 sleep 2
             fi
         fi
@@ -77,13 +77,13 @@ vault_login() {
         local ha_mode=`vault status -address=$vault_address | grep "HA Mode" | awk '{print $3}'`
         if [ $ha_mode == "active" ]
         then
-            ((i=i+1))
+            i=i+1
         else
             if [ $o -eq 4 ]
             then
                 success
             else
-                ((o=o+1))
+                o=o+1
                 sleep 2
             fi
         fi
