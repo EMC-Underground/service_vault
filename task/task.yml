@@ -24,3 +24,4 @@ run:
     docker stack ls
     docker service ls
     sleep 5
+    ./vault_init.sh
