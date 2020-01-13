@@ -17,17 +17,17 @@ vault_init() {
     local o=0
     while [[ $i -lt 1 ]]
     do
-        vault operator init -address=$vault_address -status
+        vault operator init -address=$vault_address -status > /dev/null 2>&1
         if [[ $? -eq 2 || $? -eq 0 ]]
         then
-            i=i+1
+            let "i=i+1"
         else
             if [ $o -eq 4 ]
             then
                 success
-                i=i+1
+                let "i=i+1"
             else
-                o=o+1
+                let "o=o+1"
                 sleep 2
             fi
         fi
@@ -62,7 +62,7 @@ vault_create_policy() {
 vault_create_token() {
     printf "Create vault service account.... "
     local __resultvar=$1
-    local result=`vault token create -address=$vault_address -display-name=concourse -format=json --policy concourse --period 1hr | jq -r .auth.client_token`
+    local result=`vault token create -address=$vault_address -display-name=concourse -format=json --policy concourse --period 1h | jq -r .auth.client_token`
     success
     eval $__resultvar="'$result'"
 }
@@ -83,7 +83,7 @@ vault_login() {
             then
                 success
             else
-                o=o+1
+                let "o=o+1"
                 sleep 2
             fi
         fi
