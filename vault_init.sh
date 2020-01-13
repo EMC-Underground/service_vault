@@ -115,6 +115,7 @@ main() {
     create_vault_secret "concourse/vault/" "unseal_token" $unseal
     create_vault_secret "concourse/vault/" "root_token" $roottoken
     create_vault_secret "concourse/vault/" "concourse_token" $concoursetoken
+    echo "Root Token: ${roottoken}"
 }
 
 vault_address="http://vault.${DNS_SUFFIX}"
