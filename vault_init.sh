@@ -77,7 +77,7 @@ vault_login() {
         local ha_mode=`vault status -address=$vault_address | grep "HA Mode" | awk '{print $3}'`
         if [ $ha_mode == "active" ]
         then
-            i=i+1
+            let "i=i+1"
         else
             if [ $o -eq 4 ]
             then
