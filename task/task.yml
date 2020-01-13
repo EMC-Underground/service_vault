@@ -30,4 +30,4 @@ run:
     docker service ls
     sleep 5
     chmod +x vault_init.sh
-    ./vault_init.sh
+    ash ./vault_init.sh
