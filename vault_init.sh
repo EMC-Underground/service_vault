@@ -99,6 +99,20 @@ create_vault_secret() {
     success
 }
 
+vault_temp_login() {
+    local temp_login=$1
+    printf "Logging into temporary vault.... "
+    vault login address=http://localhost:8200 $temp_login > /dev/null
+    success
+}
+
+create_temp_vault_secret() {
+    local team=$1 pipeline=$2 secret=$3
+    printf "Creating ${2} vault secret.... "
+    echo -n "$secret" | vault kv put -address=http://localhost:8200 $team$pipeline value=- > /dev/null
+    success
+}
+
 main() {
     vault_version=`vault -v | awk '{print substr($2,2)}'`
     echo "Vault CLI version: ${vault_version}"
@@ -115,6 +129,9 @@ main() {
     create_vault_secret "concourse/vault/" "unseal_token" $unseal
     create_vault_secret "concourse/vault/" "root_token" $roottoken
     create_vault_secret "concourse/vault/" "concourse_token" $concoursetoken
+    vault_temp_login $TEMP_VAULT_ROOT_TOKEN
+    create_temp_vault_secret "concourse/main/build/" "vault_root_token" $roottoken
+    create_temp_vault_secret "concourse/main/build/" "vault_concourse_token" $concoursetoken
     echo "Root Token: ${roottoken}"
 }
 
