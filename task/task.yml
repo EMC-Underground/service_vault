@@ -21,10 +21,15 @@ run:
   - -c
   - |
     cd vault_repo
+    state=""
     docker stack ps vault > /dev/null
     if [ $? -ne 0 ]
     then
         docker stack deploy -c docker-compose.yml vault
+        until [ $state == "Running" ]
+        do
+            state=`docker service ps vault_vault | awk 'FNR == 2 {print $6}'`
+        done
         echo "Deployed Vault"
     fi
     docker stack ls
