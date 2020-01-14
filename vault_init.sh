@@ -115,7 +115,7 @@ create_temp_vault_secret() {
 
 main() {
     vault_version=`vault -v | awk '{print substr($2,2)}'`
-    host_ip=`/sbin/ip route|awk '/default/ { print $3 }'`
+    host_ip=${TEMP_VAULT_IP}
     echo "Vault CLI version: ${vault_version}"
     echo "Vault address: ${vault_address}"
     vault_init keys

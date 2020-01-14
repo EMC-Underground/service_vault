@@ -11,6 +11,7 @@ params:
   DNS_SUFFIX: ((dnssuffix))
   DOCKER_HOST: ((dockerhost))
   TEMP_VAULT_ROOT_TOKEN: ((tempvaultroottoken))
+  TEMP_VAULT_IP: ((tempvaultip))
 
 inputs:
   - name: vault_repo
