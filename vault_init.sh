@@ -3,20 +3,21 @@
 success() {
     if [ $? -eq 0 ]
     then
-      echo "DONE"
+      echo " DONE"
     else
-      echo "ERROR"
+      echo " ERROR"
         exit 1
     fi
 }
 
 vault_init() {
-    printf "Initializing Vault.... "
+    printf "Initializing Vault"
     local  __resultvar=$1
     local i=0
     local o=0
     while [[ $i -lt 1 ]]
     do
+        printf "."
         vault operator init -address=$vault_address -status > /dev/null 2>&1
         if [[ $? -eq 2 || $? -eq 0 ]]
         then
@@ -39,19 +40,19 @@ vault_init() {
 
 vault_unseal() {
     local root_token=$1
-    printf "Unsealing the vault.... "
+    printf "Unsealing the vault...."
     vault operator unseal -address=$vault_address $root_token > /dev/null 2>&1
     success
 }
 
 vault_create_store() {
-    printf "Creating vault secret store.... "
+    printf "Creating vault secret store...."
     vault secrets enable -address=$vault_address -version=1 -path=concourse kv > /dev/null 2>&1
     success
 }
 
 vault_create_policy() {
-    printf "Create vault policy.... "
+    printf "Create vault policy...."
     echo 'path "concourse/*" {
   policy = "read"
 }' > /tmp/concourse-policy.hcl
@@ -60,7 +61,7 @@ vault_create_policy() {
 }
 
 vault_create_token() {
-    printf "Create vault service account.... "
+    printf "Create vault service account...."
     local __resultvar=$1
     local result=`vault token create -address=$vault_address -display-name=concourse -format=json --policy concourse --period 1h | jq -r .auth.client_token`
     success
@@ -69,11 +70,12 @@ vault_create_token() {
 
 vault_login() {
     local root_token=$1
-    printf "Logging into Vault.... "
+    printf "Logging into Vault"
     local i=0
     local o=0
     while [[ $i -lt 1 ]]
     do
+        printf "."
         local ha_mode=`vault status -address=$vault_address | grep "HA Mode" | awk '{print $3}'`
         if [ $ha_mode == "active" ]
         then
@@ -94,21 +96,21 @@ vault_login() {
 
 create_vault_secret() {
     local team=$1 pipeline=$2 secret=$3
-    printf "Creating ${2} vault secret.... "
+    printf "Creating ${2} vault secret...."
     echo -n "$secret" | vault kv put -address=$vault_address $team$pipeline value=- > /dev/null
     success
 }
 
 vault_temp_login() {
     local temp_login=$1
-    printf "Logging into temporary vault.... "
+    printf "Logging into temporary vault...."
     vault login -address="http://${host_ip}:8200" $temp_login > /dev/null
     success
 }
 
 create_temp_vault_secret() {
     local team=$1 pipeline=$2 secret=$3
-    printf "Creating ${2} vault secret.... "
+    printf "Creating ${2} vault secret...."
     echo -n "$secret" | vault kv put -address="http://${host_ip}:8200" $team$pipeline value=- > /dev/null
     success
 }
@@ -134,6 +136,7 @@ main() {
     create_temp_vault_secret "concourse/main/build/" "vault_root_token" $roottoken
     create_temp_vault_secret "concourse/main/build/" "vault_concourse_token" $concoursetoken
     echo "Root Token: ${roottoken}"
+    echo "Concourse Token: ${concoursetoken}"
 }
 
 vault_address="http://vault.${DNS_SUFFIX}"
