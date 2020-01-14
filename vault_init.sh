@@ -102,19 +102,20 @@ create_vault_secret() {
 vault_temp_login() {
     local temp_login=$1
     printf "Logging into temporary vault.... "
-    vault login -address=http://localhost:8200 $temp_login > /dev/null
+    vault login -address="http://${host_ip}:8200" $temp_login > /dev/null
     success
 }
 
 create_temp_vault_secret() {
     local team=$1 pipeline=$2 secret=$3
     printf "Creating ${2} vault secret.... "
-    echo -n "$secret" | vault kv put -address=http://localhost:8200 $team$pipeline value=- > /dev/null
+    echo -n "$secret" | vault kv put -address="http://${host_ip}:8200" $team$pipeline value=- > /dev/null
     success
 }
 
 main() {
     vault_version=`vault -v | awk '{print substr($2,2)}'`
+    host_ip=`/sbin/ip route|awk '/default/ { print $3 }'`
     echo "Vault CLI version: ${vault_version}"
     echo "Vault address: ${vault_address}"
     vault_init keys
