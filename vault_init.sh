@@ -102,7 +102,7 @@ create_vault_secret() {
 vault_temp_login() {
     local temp_login=$1
     printf "Logging into temporary vault.... "
-    vault login address=http://localhost:8200 $temp_login > /dev/null
+    vault login -address=http://localhost:8200 $temp_login > /dev/null
     success
 }
 
