@@ -34,10 +34,12 @@ run:
             state=`docker service ps vault_vault | awk 'FNR == 2 {print $6}'`
         done
         echo "Done"
+        apk add --update jq vault > /dev/null 2>&1
+        chmod +x vault_init.sh
+        chown root:root /usr/sbin/vault
+        ash ./vault_init.sh
+    else
+        printf "Vault Already Deployed"
     fi
     docker stack ls
     docker service ls
-    apk add --update jq vault
-    chmod +x vault_init.sh
-    chown root:root /usr/sbin/vault
-    ash ./vault_init.sh
