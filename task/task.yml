@@ -32,6 +32,7 @@ run:
         do
             printf "."
             state=`docker service ps vault_vault | awk 'FNR == 2 {print $6}'`
+            sleep 3
         done
         echo "Done"
         apk add --update jq vault > /dev/null 2>&1

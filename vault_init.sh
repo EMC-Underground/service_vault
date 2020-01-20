@@ -63,7 +63,7 @@ vault_create_policy() {
 vault_create_token() {
     printf "Create vault service account...."
     local __resultvar=$1
-    local result=`vault token create -address=$vault_address -display-name=concourse -format=json --policy concourse --period 2h | jq -r .auth.client_token`
+    local result=`vault token create -address=$vault_address -display-name=concourse -format=json --policy concourse | jq -r .auth.client_token`
     success
     eval $__resultvar="'$result'"
 }
