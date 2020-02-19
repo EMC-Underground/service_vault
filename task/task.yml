@@ -36,6 +36,7 @@ run:
                 then
                     state="cleanup"
                 fi
+                ;;
             "cleanup")
                 state="deploy"
                 docker stack rm $stack > /dev/null 2>&1
@@ -45,6 +46,7 @@ run:
                     exit 1
                 fi
                 sleep 2
+                ;;
             "deploy")
                 state="deploying"
                 docker stack deploy -c docker-compose.yml $stack > /dev/null 2>&1
@@ -53,6 +55,7 @@ run:
                     state="error"
                     exit 1
                 fi
+                ;;
             "deploying")
                 state="deploying"
                 service_state=`docker service ps $stack_$service | awk 'FNR == 2 {print $6}'`
@@ -60,6 +63,7 @@ run:
                 then
                     state="complete"
                 fi
+                ;;
         esac
     done
     docker stack ls
