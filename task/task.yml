@@ -22,25 +22,45 @@ run:
   - -c
   - |
     cd vault_repo
-    state="Prep"
-    docker stack ps vault > /dev/null 2>&1
-    if [ $? -ne 0 ]
-    then
-        printf "Deploying Vault"
-        docker stack deploy -c docker-compose.yml vault
-        until [ "${state}" == "Running" ]
-        do
-            printf "."
-            state=`docker service ps vault_vault | awk 'FNR == 2 {print $6}'`
-            sleep 3
-        done
-        echo "Done"
-        apk add --update jq vault > /dev/null 2>&1
-        chmod +x vault_init.sh
-        chown root:root /usr/sbin/vault
-        ash ./vault_init.sh
-    else
-        printf "Vault Already Deployed"
-    fi
+    state="prep"
+    stack="vault"
+    service="vault"
+    until [ $state == "complete" ]
+    do
+        echo "Current State=${state}"
+        case $state in
+            "prep")
+                state="deploy"
+                docker stack ps $stack > /dev/null 2>&1
+                if [ $? -eq 0 ]
+                then
+                    state="cleanup"
+                fi
+            "cleanup")
+                state="deploy"
+                docker stack rm $stack > /dev/null 2>&1
+                if [ $? -ne 0 ]
+                then
+                    state="error"
+                    exit 1
+                fi
+                sleep 2
+            "deploy")
+                state="deploying"
+                docker stack deploy -c docker-compose.yml $stack > /dev/null 2>&1
+                if [ $? -ne 0 ]
+                then
+                    state="error"
+                    exit 1
+                fi
+            "deploying")
+                state="deploying"
+                service_state=`docker service ps $stack_$service | awk 'FNR == 2 {print $6}'`
+                if [ $service_state == "Running" ]
+                then
+                    state="complete"
+                fi
+        esac
+    done
     docker stack ls
     docker service ls
