@@ -69,3 +69,4 @@ run:
     done
     docker stack ls
     docker service ls
+    ./vault_init.sh
