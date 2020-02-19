@@ -69,4 +69,7 @@ run:
     done
     docker stack ls
     docker service ls
-    ./vault_init.sh
+    apk add --update jq vault > /dev/null 2>&1
+    chmod +x vault_init.sh
+    chown root:root /usr/sbin/vault
+    ash ./vault_init.sh
