@@ -58,7 +58,7 @@ run:
                 ;;
             "deploying")
                 state="deploying"
-                service_state=`docker service ps $stack_$service | awk 'FNR == 2 {print $6}'`
+                service_state=`docker service ps ${stack}_${service} | awk 'FNR == 2 {print $6}'`
                 if [ $service_state == "Running" ]
                 then
                     state="complete"
