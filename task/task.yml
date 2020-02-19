@@ -63,6 +63,7 @@ run:
                 then
                     state="complete"
                 fi
+                sleep 2
                 ;;
         esac
     done
