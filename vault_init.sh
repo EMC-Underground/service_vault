@@ -129,9 +129,11 @@ main() {
     vault_create_policy
     vault_create_token concoursetoken
     export VAULT_CLIENT_TOKEN=$concoursetoken
-    create_vault_secret "concourse/vault/" "unseal_token" $unseal
-    create_vault_secret "concourse/vault/" "root_token" $roottoken
-    create_vault_secret "concourse/vault/" "concourse_token" $concoursetoken
+    create_vault_secret "concourse/main/" "unseal_token" $unseal
+    create_vault_secret "concourse/main/" "root_token" $roottoken
+    create_vault_secret "concourse/main/" "concourse_token" $concoursetoken
+    create_vault_secret "concourse/main/" "dnssuffix" $DNS_SUFFIX
+    create_vault_secret "concourse/main/" "dockerhost" $DOCKER_HOST
     vault_temp_login $TEMP_VAULT_ROOT_TOKEN
     create_temp_vault_secret "concourse/main/build/" "vault_root_token" $roottoken
     create_temp_vault_secret "concourse/main/build/" "vault_concourse_token" $concoursetoken
