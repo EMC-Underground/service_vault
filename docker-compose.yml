@@ -16,10 +16,10 @@ services:
     command: vault server -config=/vault/config/vault-config.hcl
     deploy:
       labels:
-        - "traefik.frontend.rule=Host:vault.${DNS_SUFFIX}"
-        - "traefik.port=8200"
-        - "traefik.docker.network=traefik-net"
         - "traefik.enable=true"
+        - "traefik.http.routers.traefik.rule=Host(`vault.${DNS_SUFFIX}`)"
+        - "traefik.http.routers.traefik.entrypoints=http"
+        - "traefik.http.services.traefik.loadbalancer.server.port=8200"
 
 configs:
   vault_json:
