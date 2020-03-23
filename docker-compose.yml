@@ -17,9 +17,9 @@ services:
     deploy:
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.traefik.rule=Host(`vault.${DNS_SUFFIX}`)"
-        - "traefik.http.routers.traefik.entrypoints=http"
-        - "traefik.http.services.traefik.loadbalancer.server.port=8200"
+        - "traefik.http.routers.vault.rule=Host(`vault.${DNS_SUFFIX}`)"
+        - "traefik.http.routers.vault.entrypoints=http"
+        - "traefik.http.services.vault.loadbalancer.server.port=8200"
 
 configs:
   vault_json:
