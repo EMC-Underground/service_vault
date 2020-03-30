@@ -134,6 +134,9 @@ main() {
     create_vault_secret "concourse/main/" "concourse_token" $concoursetoken
     create_vault_secret "concourse/main/" "dnssuffix" $DNS_SUFFIX
     create_vault_secret "concourse/main/" "dockerhost" $DOCKER_HOST
+    create_vault_secret "concourse/main/" "persistence_driver" $persistence_driver
+    create_vault_secret "concourse/main/" "nfs_server" $nfs_server
+    create_vault_secret "concourse/main/" "nfs_share" $nfs_share
     vault_temp_login $TEMP_VAULT_ROOT_TOKEN
     create_temp_vault_secret "concourse/main/build/" "vault_root_token" $roottoken
     create_temp_vault_secret "concourse/main/build/" "vault_concourse_token" $concoursetoken
