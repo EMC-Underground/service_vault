@@ -140,6 +140,7 @@ main() {
     vault_temp_login $TEMP_VAULT_ROOT_TOKEN
     create_temp_vault_secret "concourse/main/build/" "vault_root_token" $roottoken
     create_temp_vault_secret "concourse/main/build/" "vault_concourse_token" $concoursetoken
+    create_temp_vault_secret "concourse/main/build/" "vault_unseal_token" $unseal
     echo "Root Token: ${roottoken}"
     echo "Concourse Token: ${concoursetoken}"
 }
