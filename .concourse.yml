@@ -1,0 +1,62 @@
+---
+resources:
+- name: vault_repo
+  type: git
+  source:
+    uri: https://github.com/EMC-Underground/service_vault.git
+    branch: dev
+
+- name: daily
+  type: time
+  source:
+    location: America/Los_Angeles
+    start: 5:00 AM
+    stop: 6:00 AM
+
+jobs:
+- name:
+  public: true
+  plan:
+  - get: vault_repo
+  - get: daily
+    trigger: true
+  - task: update-vault
+    params:
+      DNS_SUFFIX: ((dnssuffix))
+      DOCKER_HOST: ((dockerhost))
+      PERSISTENCE_DRIVER: ((persistence_driver))
+      NFS_SERVER: ((nfs_server))
+      NFS_SHARE: ((nfs_share))
+      DOCKER_SERVICE: vault
+      DOCKER_STACK: vault
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: nctiggy/image_seti_builder
+          tag: latest
+      inputs:
+        - name: vault_repo
+      run:
+        path: bash
+        args:
+        - -c
+        - |
+          cd vault_repo
+          export COMMIT_MESSAGE=`git log -1 --oneline --format=%s`
+          export BRANCH_NAME=`git branch -a | awk 'FNR==2{print $1}'`
+          cat docker-compose.yml.tmpl | python3 variables_injector.py > docker-compose.yml
+          cat << EOM
+          Deploying Docker Stack
+          REPO Info:
+            Branch Name:          ${BRANCH_NAME}
+            Commit Message:       ${COMMIT_MESSAGE}
+          Docker Info:
+            Stack Name:           ${BRANCH_NAME}
+            Service Name:         ${DOCKER_SERVICE}
+            Persistence Driver:   ${PERSISTENCE_DRIVER}
+            Docker Host:          ${DOCKER_HOST}
+            Service URL:          http://${DOCKER_SERVICE}.${DNS_SUFFIX}
+          EOM
+          bash <(curl -fsSL https://raw.githubusercontent.com/EMC-Underground/service_overlord/master/service_overlord.sh) create_web --stack ${DOCKER_STACK} --service ${DOCKER_SERVICE} --docker_host ${DOCKER_HOST} --dns_suffix ${DNS_SUFFIX}

@@ -1,7 +1,7 @@
 version: '3.6'
 
 services:
-  vault:
+  {{env['DOCKER_SERVICE']}}:
     image: vault
     configs:
       - source: vault_json
@@ -17,9 +17,9 @@ services:
     deploy:
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.vault.rule=Host(`vault.${DNS_SUFFIX}`)"
-        - "traefik.http.routers.vault.entrypoints=http"
-        - "traefik.http.services.vault.loadbalancer.server.port=8200"
+        - "traefik.http.routers.{{env['DOCKER_STACK']}}.rule=Host(`{{env['DOCKER_STACK']}}.{{env['DNS_SUFFIX']}}`)"
+        - "traefik.http.routers.{{env['DOCKER_STACK']}}.entrypoints=http"
+        - "traefik.http.services.{{env['DOCKER_STACK']}}.loadbalancer.server.port=8200"
 
 configs:
   vault_json:
