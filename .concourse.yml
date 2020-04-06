@@ -14,7 +14,7 @@ resources:
     stop: 6:00 AM
 
 jobs:
-- name:
+- name: job_deploy_vault
   public: true
   plan:
   - get: vault_repo
