@@ -137,6 +137,8 @@ main() {
     create_vault_secret "concourse/main/" "persistence_driver" $persistence_driver
     create_vault_secret "concourse/main/" "nfs_server" $nfs_server
     create_vault_secret "concourse/main/" "nfs_share" $nfs_share
+    create_vault_secret "concourse/main/" "concourse_username" "test"
+    create_vault_secret "concourse/main/" "concourse_password" "test"
     vault_temp_login $TEMP_VAULT_ROOT_TOKEN
     create_temp_vault_secret "concourse/main/build/" "vault_root_token" $roottoken
     create_temp_vault_secret "concourse/main/build/" "vault_concourse_token" $concoursetoken
