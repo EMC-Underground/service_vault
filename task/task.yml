@@ -39,6 +39,7 @@ run:
       Service Name:         ${DOCKER_SERVICE}
       Persistence Driver:   ${PERSISTENCE_DRIVER}
       Docker Host:          ${DOCKER_HOST}
+      Service URL:          http://${DOCKER_STACK}.${DNS_SUFFIX}
     EOM
     bash <(curl -fsSL https://raw.githubusercontent.com/EMC-Underground/service_overlord/master/service_overlord.sh) create_web --stack ${DOCKER_STACK} --service ${DOCKER_SERVICE} --docker_host ${DOCKER_HOST} --dns_suffix ${DNS_SUFFIX}
     chmod +x vault_init.sh
