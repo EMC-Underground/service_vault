@@ -19,7 +19,6 @@ jobs:
   plan:
   - get: vault_repo
   - get: daily
-    trigger: true
   - task: update-vault
     params:
       DNS_SUFFIX: ((dnssuffix))
