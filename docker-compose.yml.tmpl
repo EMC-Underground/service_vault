@@ -1,7 +1,7 @@
 version: '3.6'
 
 services:
-  vault:
+  {{env['DOCKER_SERVICE']}}:
     image: vault
     configs:
       - source: vault_json
@@ -16,10 +16,10 @@ services:
     command: vault server -config=/vault/config/vault-config.hcl
     deploy:
       labels:
-        - "traefik.frontend.rule=Host:vault.${DNS_SUFFIX}"
-        - "traefik.port=8200"
-        - "traefik.docker.network=traefik-net"
         - "traefik.enable=true"
+        - "traefik.http.routers.{{env['DOCKER_STACK']}}.rule=Host(`{{env['DOCKER_STACK']}}.{{env['DNS_SUFFIX']}}`)"
+        - "traefik.http.routers.{{env['DOCKER_STACK']}}.entrypoints=http"
+        - "traefik.http.services.{{env['DOCKER_STACK']}}.loadbalancer.server.port=8200"
 
 configs:
   vault_json:
